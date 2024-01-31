@@ -11,14 +11,13 @@ export default function CAnuncio() {
       .then(json => {
         const data = json.pginformacion;
         setDatos(data);
-        const filtrado = data.filter(fila => fila.categoria.toLowerCase() === "informacion");
-        setDatos(filtrado);  
+        const filtrado = data.filter(fila => fila.categoria.toLowerCase() === rptAPI);
+        setDatos(filtrado);
       })
       .catch(error => console.error('Tenemos un error', error));
   }, []);
   return (
     <>
-
       {datos.map((fila, index) => (
         <div key={index}>
           {fila.categoria === 'empresa' ? (
@@ -34,10 +33,10 @@ export default function CAnuncio() {
               </Row>
             </>
           ) : (
-            <Row className="mb-1"> 
-            <p className="txt-jf" dangerouslySetInnerHTML={{ __html: fila.content }} />
-           
-          </Row>
+            <Row className="mb-1">
+              <p className="txt-jf" dangerouslySetInnerHTML={{ __html: fila.content }} />
+
+            </Row>
           )}
 
         </div>
