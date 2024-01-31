@@ -37,7 +37,7 @@ export default function EstructuraInicio() {
   useEffect(() => {
     const verificador = window.location.pathname.split('/');
     const rptAPI = verificador[verificador.length - 1];
-    fetch('http://localhost:3001/serviciosES')
+    fetch('/serviciosES')
       .then(response => response.json())
       .then(data => {
         const filtrado = data.filter(fila => fila.categoria === rptAPI);

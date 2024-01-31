@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 export default function EstructuraInicio() {
   const [datos, setDatos] = useState([]);
   useEffect(() => {
-    fetch('http://localhost:3001/pgubicaciongb')
+    fetch('/pgubicaciongb')
       .then(response => response.json())
       .then(data => setDatos(data))
       .catch(error => console.error('Error al obtener datos:', error));
