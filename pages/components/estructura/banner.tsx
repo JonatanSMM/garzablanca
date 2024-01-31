@@ -9,10 +9,10 @@ export default function CBanner() {
     useEffect(() => {
         const identificador = window.location.pathname.split('/');
         const categoriaApi = identificador[identificador.length - 1];
-
-        fetch('http://localhost:3001/pgslidergb')
+        fetch('/db.json')
             .then(response => response.json())
-            .then(data => {
+            .then(json => {
+                const data: any[] = json.pgslidergb;
                 const imagenesFiltradas = data.filter(fila => fila.categoria === categoriaApi);
                 setDatos(imagenesFiltradas);
                 setBanners(categoriaApi);

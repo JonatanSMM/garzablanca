@@ -14,9 +14,12 @@ export default function EstructuraInicio() {
     const verificador = window.location.pathname.split('/');
     const rptAPI = verificador[verificador.length - 1];
 
-    fetch('http://localhost:3001/pgtimeline')
+    fetch('/db.json')
       .then(response => response.json())
-      .then(data => setDatos(data))
+      .then(json => {
+        const data: any[] = json.pgtimeline; 
+        setDatos(data);
+      })
       .catch(error => console.error("Aquí hay un error", error));
   }, []);
 

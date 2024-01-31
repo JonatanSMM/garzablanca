@@ -15,9 +15,10 @@ export default function CUbicacion() {
     useEffect(() => {
         const verificador = window.location.pathname.split('/');
         const url = verificador[verificador.length - 1];
-        fetch('http://localhost:3001/serviciosES')
+        fetch('/db.json')
             .then(response => response.json())
-            .then(data => {
+            .then(json => {
+                const data: any[] = json.serviciosES;
                 const filtrado = data.filter(fila => fila.categoria === url);
                 setDatos(filtrado);
                 setUbicacion(url);
@@ -27,16 +28,19 @@ export default function CUbicacion() {
 
     const handleEnviarIdClick = (id) => {
         setEditItemId(id);
-        fetch(`http://localhost:3001/serviciosES/${id}`)
-            .then((response) => response.json())
-            .then((data) => {
-                setFormData({
-                    id: data.id,
-                    categoria: data.categoria,
-                    titulo: data.titulo,
-                    texto: data.texto,
-                    estado: data.estado,
-                    imagen: data.imagen
+        fetch(`/db.json`)
+        .then((response) => response.json())
+        .then((json) => {
+            const data: any[] = json.serviciosES;
+
+            const obj = data.find(x => x.id == id);
+            setFormData({
+                id: obj.id,
+                categoria: obj.categoria,
+                titulo: obj.titulo,
+                texto: obj.texto,
+                estado: obj.estado,
+                imagen: obj.imagen
                 });
             })
             .catch((error) => {

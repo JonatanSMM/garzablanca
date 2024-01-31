@@ -8,9 +8,10 @@ export default function CNavbar({ pagenav = "" }) {
         const urlParts = window.location.pathname.split('/');
         const categoriaFromUrl = urlParts[urlParts.length - 1];
 
-        fetch('http://localhost:3001/pgmenugb')
+        fetch('/db.json')
             .then(response => response.json())
-            .then(data => {
+            .then(json => {
+                const data: any[] = json.pgmenugb;
                 setDatos(data);
                 setSelMenu(categoriaFromUrl);
             })

@@ -6,9 +6,10 @@ export default function CAnuncio() {
   useEffect(() => {
     const verificador = window.location.pathname.split('/');
     const rptAPI = verificador[verificador.length - 1];
-    fetch('/pginformacion')
+    fetch('/db.json')
       .then(response => response.json())
-      .then(data => {
+      .then(json => {
+        const data: any[] = json.pginformacion;
         const filtrado = data.filter(fila => fila.categoria === rptAPI);
         setDatos(filtrado);
         setBanners(rptAPI);

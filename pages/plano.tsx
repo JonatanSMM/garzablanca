@@ -5,7 +5,7 @@ import CAdorno from './components/estructura/adorno'
 import { Card, Modal, Row } from 'react-bootstrap'
 import CPlano from './components/estructura/plano'
 import { Fragment, useState } from 'react'
-import React, { useEffect, useRef,useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import Swal from 'sweetalert2'
 export default function EstructuraInicio() {
     const [lgShow, setLgShow] = useState(false);
@@ -21,9 +21,9 @@ export default function EstructuraInicio() {
         precioFormato: '',
         precioFinal: '',
         estado: '',
-        coordenadas:'',
-        color:''
-      
+        coordenadas: '',
+        color: ''
+
     });
     const [areas, setAreas] = useState([]);
     const [loadedImage, setLoadedImage] = useState(null);
@@ -131,39 +131,44 @@ export default function EstructuraInicio() {
         return () => {
             canvas.removeEventListener('click', handleClick);
         };
-    }, [areas,drawAllAreas]);
+    }, [areas, drawAllAreas]);
 
     useEffect(() => {
-        fetch('http://localhost:3001/pgconfiplanobg')
+        fetch('/db.json')
             .then(response => response.json())
-            .then(data => setAreas(data))
+            .then(json => {
+                const data: any[] = json.pgconfiplanobg;
+                setAreas(data);
+            })
             .catch(error => console.error('Tenemos un error', error));
     }, []);
     const handleEditClick = (id) => {
         setEditItemId(id);
         setLgShow(true);
 
-        fetch(`http://localhost:3001/pgconfiplanobg/${id}`)
+        fetch('/db.json')
             .then((response) => response.json())
-            .then((data) => {
-              
+            .then((json) => {
+                const data: any[] = json.pgconfiplanobg;
+
+                const obj = data.find(x => x.id == id);
                 const descuento = 0.05;
-                const precioConDescuento = data.precio - (data.precio * descuento);
-                const precioOriginal = data.precio.toLocaleString("es-PE", { style: "decimal", maximumFractionDigits: 2 });
+                const precioConDescuento = obj.precio - (obj.precio * descuento);
+                const precioOriginal = obj.precio.toLocaleString("es-PE", { style: "decimal", maximumFractionDigits: 2 });
                 const precioconFormato = precioConDescuento.toLocaleString("es-PE", { style: "decimal", maximumFractionDigits: 2 });
-                if (data) {
+                if (obj) {
                     setFormData({
-                        id: data.id,
-                        lote: data.lote,
-                        manzana: data.manzana,
-                        areaLote: data.areaLote,
-                        referencia: data.referencia,
-                        precio: data.precio,
+                        id: obj.id,
+                        lote: obj.lote,
+                        manzana: obj.manzana,
+                        areaLote: obj.areaLote,
+                        referencia: obj.referencia,
+                        precio: obj.precio,
                         precioFormato: precioOriginal,
                         precioFinal: precioconFormato,
-                        estado: data.estado,
-                        coordenadas:data.coordenadas,
-                        color:data.color
+                        estado: obj.estado,
+                        coordenadas: obj.coordenadas,
+                        color: obj.color
                     });
                     setMostrarResultados(true);
                 }
@@ -183,10 +188,8 @@ export default function EstructuraInicio() {
                 title: "Verificar el monto inicial",
                 text: "El monto mínimo inicial debe ser mayor",
                 icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Volver a intentar"
+                confirmButtonColor: "#3292F7",
+                confirmButtonText: "Aceptar"
             });
         } else {
             if (pagoMensual < 1000) {
@@ -194,10 +197,8 @@ export default function EstructuraInicio() {
                     title: "Verificar el pago mensual",
                     text: "El pago mensual debe ser mayor",
                     icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Volver a intentar"
+                    confirmButtonColor: "#3292F7",
+                    confirmButtonText: "Aceptar"
                 });
             } else {
                 let numCuotas = 0;
@@ -230,17 +231,15 @@ export default function EstructuraInicio() {
                 title: "Verificar el monto inicial",
                 text: "El monto mínimo inicial debe ser mayor",
                 icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Volver a intentar"
+                confirmButtonColor: "#3292F7",
+                confirmButtonText: "Aceptar"
             });
         } else {
-        const interes = 0.015;
-        const precioTotal = parseFloat(formData.precio);
-        const calcularResta = precioTotal - cantidadInicialIntereses;
-        const calcularPagoMensual = calcularResta * ((interes * (1 + interes) ** cuotasintereses) / ((1 + interes) ** cuotasintereses - 1));
-        setPagoMensual(calcularPagoMensual);
+            const interes = 0.015;
+            const precioTotal = parseFloat(formData.precio);
+            const calcularResta = precioTotal - cantidadInicialIntereses;
+            const calcularPagoMensual = calcularResta * ((interes * (1 + interes) ** cuotasintereses) / ((1 + interes) ** cuotasintereses - 1));
+            setPagoMensual(calcularPagoMensual);
         }
     }
     return (
@@ -252,7 +251,7 @@ export default function EstructuraInicio() {
                     <div className="container">
                         <div className="row g-5">
                             <div className="col-md-12 col-lg-12 border border-3 rounded-3">
-                            
+
                                 <div className="imageContainer">
                                     <canvas ref={canvasRef} width={imageSize.width} height={imageSize.height} className="image"></canvas>
                                 </div>
@@ -303,179 +302,179 @@ export default function EstructuraInicio() {
                         </Modal.Header>
                         <Modal.Body style={{ height: '80vh', borderLeft: '2px solid #3292F7', borderRight: '2px solid #3292F7', borderBottom: '2px solid #3292F7', borderBottomRightRadius: '5px', borderBottomLeftRadius: '5px' }}>
 
-                        <div id="info-Plano">
-                        {mostrarResultados && (
-                            <span> <div className="row fw-bold text-center ">
-                                <div className="col">
-                                    Manzana:
-                                </div>
-                                <div className="col">
-                                    Lote:
-                                </div>
-                                <div className="col">
-                                    Área del Lote:
-                                </div>
-                                <div className="col">
-                                    Costo del Lote:
-                                </div>
-                            </div>
-                                <div className="row text-center">
-                                    <div className="col p-1">
-                                        {formData.manzana}
+                            <div id="info-Plano">
+                                {mostrarResultados && (
+                                    <span> <div className="row fw-bold text-center ">
+                                        <div className="col">
+                                            Manzana:
+                                        </div>
+                                        <div className="col">
+                                            Lote:
+                                        </div>
+                                        <div className="col">
+                                            Área del Lote:
+                                        </div>
+                                        <div className="col">
+                                            Costo del Lote:
+                                        </div>
                                     </div>
-                                    <div className="col p-1">
-                                        {formData.lote}
-                                    </div>
-                                    <div className="col p-1">
-                                        {formData.areaLote}
-                                    </div>
-                                    <div className="col bg-dark-subtle rounded p-1 fw-bold border border-secondary">
-                                        S/. {formData.precioFormato}
-                                    </div>
+                                        <div className="row text-center">
+                                            <div className="col p-1">
+                                                {formData.manzana}
+                                            </div>
+                                            <div className="col p-1">
+                                                {formData.lote}
+                                            </div>
+                                            <div className="col p-1">
+                                                {formData.areaLote}
+                                            </div>
+                                            <div className="col bg-dark-subtle rounded p-1 fw-bold border border-secondary">
+                                                S/. {formData.precioFormato}
+                                            </div>
 
-                                    <hr className="my-0 border-3 mt-2" />
-                                </div>
+                                            <hr className="my-0 border-3 mt-2" />
+                                        </div>
 
-                                <div className="row">
-                                    <div className="col-md-6 text-left">
-                                        <div className="row text-left p-5">
-                                            <div className="col-md-12 fw-bold text-center mb-2">NUESTROS FINANCIAMIENTOS</div>
-                                            <div className="col-md-6 pt-1">
-                                                <div className="form-check">
-                                                    <input className="form-check-input" type="radio" name="financimiento" value="sinIntereses" onChange={(e) => setFinanciamiento(e.target.value)} />
-                                                    <label className="form-check-label" >
-                                                        Financiamiento sin intereses
-                                                    </label>
+                                        <div className="row">
+                                            <div className="col-md-6 text-left">
+                                                <div className="row text-left p-5">
+                                                    <div className="col-md-12 fw-bold text-center mb-2">NUESTROS FINANCIAMIENTOS</div>
+                                                    <div className="col-md-6 pt-1">
+                                                        <div className="form-check">
+                                                            <input className="form-check-input" type="radio" name="financimiento" value="sinIntereses" onChange={(e) => setFinanciamiento(e.target.value)} />
+                                                            <label className="form-check-label" >
+                                                                Financiamiento sin intereses
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-md-6 pt-1">
+                                                        <div className="form-check">
+                                                            <input className="form-check-input" type="radio" name="financimiento" value="conIntereses" onChange={(e) => setFinanciamiento(e.target.value)} />
+                                                            <label className="form-check-label" >
+                                                                Financiamiento con intereses
+                                                            </label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className="col-md-6 pt-1">
-                                                <div className="form-check">
-                                                    <input className="form-check-input" type="radio" name="financimiento" value="conIntereses" onChange={(e) => setFinanciamiento(e.target.value)} />
-                                                    <label className="form-check-label" >
-                                                        Financiamiento con intereses
-                                                    </label>
+                                            <div className="col-md-6 border border-top-0 ">
+                                                <div className="row text-left p-5">
+                                                    <div className="col-md-12 fw-bold text-center mb-2">PAGO AL CONTADO</div>
+                                                    <div className="col-md-6 fw-bold">Descuento:</div>
+                                                    <div className="col-md-6">&nbsp; &nbsp; &nbsp; 5 %</div>
+                                                    <div className="col-md-6 fw-bold">Precio Final:</div>
+                                                    <div className="col-md-6">S/. {formData.precioFinal}</div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="col-md-6 border border-top-0 ">
-                                        <div className="row text-left p-5">
-                                            <div className="col-md-12 fw-bold text-center mb-2">PAGO AL CONTADO</div>
-                                            <div className="col-md-6 fw-bold">Descuento:</div>
-                                            <div className="col-md-6">&nbsp; &nbsp; &nbsp; 5 %</div>
-                                            <div className="col-md-6 fw-bold">Precio Final:</div>
-                                            <div className="col-md-6">S/. {formData.precioFinal}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </span>
-                        )}
-                        {financiamiento === "sinIntereses" &&
-                            <div className="row">
-                                <div className="col-md-12 fw-bold">Ingrese antes los siguientes datos para calcular:</div>
-                                <div className="row p-4">
-                                    <div className="col-md-4 g-1">
-                                        <div className="row">
-                                            <div className="col-auto">
-                                                <label className="col-form-label">Inicial</label>
+                                    </span>
+                                )}
+                                {financiamiento === "sinIntereses" &&
+                                    <div className="row">
+                                        <div className="col-md-12 fw-bold">Ingrese antes los siguientes datos para calcular:</div>
+                                        <div className="row p-4">
+                                            <div className="col-md-4 g-1">
+                                                <div className="row">
+                                                    <div className="col-auto">
+                                                        <label className="col-form-label">Inicial</label>
+                                                    </div>
+                                                    <div className="col-auto">
+                                                        <input type="number" className="form-control" placeholder="Mínimo: S/. 10,000" onChange={(e) => setCantidadInicial(parseFloat(e.target.value))} />
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="col-auto">
-                                                <input type="number" className="form-control" placeholder="Mínimo: S/. 10,000" onChange={(e) => setCantidadInicial(parseFloat(e.target.value))} />
+                                            <div className="col-md-4 g-1">
+                                                <div className="row">
+                                                    <div className="col-auto">
+                                                        <label className="col-form-label">Pago mensual</label>
+                                                    </div>
+                                                    <div className="col-auto">
+                                                        <input type="number" className="form-control" placeholder="Mínimo: S/. 1,000" onChange={(e) => setPagoMensual(parseFloat(e.target.value))} />
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-4 g-1">
-                                        <div className="row">
-                                            <div className="col-auto">
-                                                <label className="col-form-label">Pago mensual</label>
-                                            </div>
-                                            <div className="col-auto">
-                                                <input type="number" className="form-control" placeholder="Mínimo: S/. 1,000" onChange={(e) => setPagoMensual(parseFloat(e.target.value))} />
+                                            <div className="col-md-4">
+                                                <button type="button" className="btn btn-info text-light btn-lg" onClick={() => calcularCeroIntereses()} >Calcular</button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <button type="button" className="btn btn-info text-light btn-lg" onClick={() => calcularCeroIntereses()} >Calcular</button>
-                                    </div>
-                                </div>
-                                <div className="col-md-12 ">
-                                    <table className="table table-borderless text-center table-bordered">
-                                        <thead className="table-info border-info">
-                                            <tr>
-                                                <th className="text-dark fw-bold">N° Cuotas</th>
-                                                <th className="text-dark fw-bold">Intereses</th>
-                                                <th className="text-dark fw-bold">última cuota</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="">
-                                            <tr className="border-1 border-secondary-subtle">
-                                                <td>{numeroCuotas} meses</td>
-                                                <td>0 %</td>
-                                                <td>S/. {ultimaCuota.toFixed(2)}</td>
-                                            </tr>
+                                        <div className="col-md-12 ">
+                                            <table className="table table-borderless text-center table-bordered">
+                                                <thead className="table-info border-info">
+                                                    <tr>
+                                                        <th className="text-dark fw-bold">N° Cuotas</th>
+                                                        <th className="text-dark fw-bold">Intereses</th>
+                                                        <th className="text-dark fw-bold">última cuota</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="">
+                                                    <tr className="border-1 border-secondary-subtle">
+                                                        <td>{numeroCuotas} meses</td>
+                                                        <td>0 %</td>
+                                                        <td>S/. {ultimaCuota.toFixed(2)}</td>
+                                                    </tr>
 
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        }
-                        {financiamiento === "conIntereses" &&
-                            <div className="row">
-                                <div className="col-md-12 fw-bold">Ingrese antes los siguientes datos para calcular:</div>
-                                <div className="row p-4">
-                                    <div className="col-md-4 g-1">
-                                        <div className="row">
-                                            <div className="col-auto">
-                                                <label className="col-form-label">Inicial</label>
-                                            </div>
-                                            <div className="col-auto">
-                                                <input type="number" className="form-control" placeholder="Mínimo: S/. 6,000" onChange={(e) => setCantidadInicialIntereses(parseFloat(e.target.value))} />
-                                            </div>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
-                                    <div className="col-md-4 g-1">
-                                        <div className="row">
-                                            <div className="col-auto">
-                                                <label className="col-form-label">Cuotas</label>
+                                }
+                                {financiamiento === "conIntereses" &&
+                                    <div className="row">
+                                        <div className="col-md-12 fw-bold">Ingrese antes los siguientes datos para calcular:</div>
+                                        <div className="row p-4">
+                                            <div className="col-md-4 g-1">
+                                                <div className="row">
+                                                    <div className="col-auto">
+                                                        <label className="col-form-label">Inicial</label>
+                                                    </div>
+                                                    <div className="col-auto">
+                                                        <input type="number" className="form-control" placeholder="Mínimo: S/. 6,000" onChange={(e) => setCantidadInicialIntereses(parseFloat(e.target.value))} />
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="col-auto">
-                                                <select className="form-select" onChange={(e) => setCuotasIntereses(parseFloat(e.target.value))}>
-                                                    <option value="">Seleccionar las cuotas</option>
-                                                    <option value="36">36</option>
-                                                    <option value="48">48</option>
-                                                    <option value="60">60</option>
-                                                </select>
+                                            <div className="col-md-4 g-1">
+                                                <div className="row">
+                                                    <div className="col-auto">
+                                                        <label className="col-form-label">Cuotas</label>
+                                                    </div>
+                                                    <div className="col-auto">
+                                                        <select className="form-select" onChange={(e) => setCuotasIntereses(parseFloat(e.target.value))}>
+                                                            <option value="">Seleccionar las cuotas</option>
+                                                            <option value="36">36</option>
+                                                            <option value="48">48</option>
+                                                            <option value="60">60</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <button type="button" className="btn btn-info text-light btn-lg" onClick={() => calcularConIntereses()}>Calcular</button>
                                             </div>
                                         </div>
+                                        <div className="col-md-12 ">
+                                            <table className="table table-borderless text-center table-bordered">
+                                                <thead className="table-info border-info">
+                                                    <tr>
+                                                        <th className="text-dark fw-bold">Interés Mensual</th>
+                                                        <th className="text-dark fw-bold">Pago Mensual</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="">
+                                                    <tr className="border-1 border-secondary-subtle">
+                                                        <td>1.5 %</td>
+                                                        <td>s/ {pagoMensual.toFixed(2)}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                    <div className="col-md-4">
-                                        <button type="button" className="btn btn-info text-light btn-lg" onClick={() => calcularConIntereses()}>Calcular</button>
+                                }
+                                {financiamiento === "" &&
+                                    <div className="py-5"> &nbsp;
                                     </div>
-                                </div>
-                                <div className="col-md-12 ">
-                                    <table className="table table-borderless text-center table-bordered">
-                                        <thead className="table-info border-info">
-                                            <tr>
-                                                <th className="text-dark fw-bold">Interés Mensual</th>
-                                                <th className="text-dark fw-bold">Pago Mensual</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="">
-                                            <tr className="border-1 border-secondary-subtle">
-                                                <td>1.5 %</td>
-                                                <td>s/ {pagoMensual.toFixed(2)}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                }
                             </div>
-                        }
-                        {financiamiento === "" &&
-                            <div className="py-5"> &nbsp;
-                            </div>
-                        }
-                    </div>
-                            
+
                         </Modal.Body>
                     </Modal>
                 </Fragment>

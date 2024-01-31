@@ -9,16 +9,14 @@ import { useEffect, useState } from 'react'
 export default function EstructuraInicio() {
   const [datos, setDatos] = useState([]);
   useEffect(() => {
-    fetch('/pgubicaciongb')
+    fetch('/db.json')
       .then(response => response.json())
-      .then(data => setDatos(data))
+      .then(json => {
+        const data: any[] = json.pgubicaciongb;
+        setDatos(data);
+      })
       .catch(error => console.error('Error al obtener datos:', error));
   }, []);
-
-  function cambiarColor() {
-
-  }
-
   return (
     <>
       <Row className='bg-white m-0'>

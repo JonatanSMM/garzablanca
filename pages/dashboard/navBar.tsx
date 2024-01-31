@@ -28,9 +28,12 @@ const Navbar = () => {
        // (fila.texto.toLowerCase().includes(searchTerm.toLowerCase()) || fila.href.toLowerCase().includes(searchTerm.toLowerCase())));
 
     useEffect(() => {
-        fetch('http://localhost:3001/pgmenugb')
+        fetch('/db.json')
             .then(response => response.json())
-            .then(data => setDatos(data))
+            .then(json => {
+                const data: any[] = json.pgmenugb;
+                setDatos(data);
+            })
             .catch(error => console.error('Error al obtener datos:', error));
     }, []);
 
@@ -40,14 +43,17 @@ const Navbar = () => {
         setEditItemId(id);
         setLgShow(true);
 
-        fetch(`http://localhost:3001/pgmenugb/${id}`)
+        fetch('/db.json')
             .then((response) => response.json())
-            .then((data) => {
+            .then((json) => {
+                const data: any[] = json.pgmenugb;
+
+            const obj = data.find(x => x.id == id);
                 setFormData({
-                    id: data.id,
-                    href: data.href,
-                    categoria: data.categoria,
-                    texto: data.texto
+                    id: obj.id,
+                    href: obj.href,
+                    categoria: obj.categoria,
+                    texto: obj.texto
                 });
             })
             .catch((error) => {
@@ -57,7 +63,7 @@ const Navbar = () => {
 
     const handleSaveClick = () => {
         if (editItemId) {
-            fetch(`http://localhost:3001/pgmenugb/${editItemId}`, {
+            fetch('/db.json', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -65,7 +71,9 @@ const Navbar = () => {
                 body: JSON.stringify(formData),
             })
                 .then((response) => response.json())
-                .then((data) => {
+                .then((json) => {
+                    const data: any[] = json.pgmenugb;
+                    const obj = data.find(x => x.id == editItemId);   
                     console.log('Datos actualizados:', data);
                 })
                 .catch((error) => {
@@ -73,7 +81,7 @@ const Navbar = () => {
                 });
             setEditItemId(null);
         } else {
-            fetch('http://localhost:3001/pgmenu', {
+            fetch('/db.json', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -81,7 +89,8 @@ const Navbar = () => {
                 body: JSON.stringify(formData),
             })
                 .then((response) => response.json())
-                .then((data) => {
+                .then((json) => {
+                    const data: any[] = json.pgmenugb;
                     console.log('Datos guardados:', data);
                 })
                 .catch((error) => {

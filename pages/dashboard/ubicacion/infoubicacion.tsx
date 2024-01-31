@@ -28,9 +28,12 @@ const Infoubicacion = () => {
         (fila.titulo.toLowerCase().includes(searchTerm.toLowerCase())));
 
     useEffect(() => {
-        fetch('http://localhost:3001/pgubicaciongb')
+        fetch('/db.json')
             .then(response => response.json())
-            .then(data => setDatos(data))
+            .then(json => {
+                const data: any[] = json.pgubicaciongb;
+                setDatos(data);
+            })
             .catch(error => console.error('Error al obtener datos:', error));
     }, []);
 
