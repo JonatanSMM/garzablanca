@@ -37,9 +37,10 @@ export default function EstructuraInicio() {
   useEffect(() => {
     const verificador = window.location.pathname.split('/');
     const rptAPI = verificador[verificador.length - 1];
-    fetch('/serviciosES')
+    fetch('/db.json')
       .then(response => response.json())
-      .then(data => {
+      .then(json => {
+        const data: any[] = json.serviciosES; // Acceso a la tabla del json  
         const filtrado = data.filter(fila => fila.categoria === rptAPI);
         setDatos(filtrado);
         setBanners(rptAPI);
@@ -49,34 +50,34 @@ export default function EstructuraInicio() {
   return (
     <>
       <Row className='bg-white m-0'>
-       <Card className='p-0'>
-              <CTop />
-              <CAdorno />
-              <div className='m-0'>
-                <div className="container" >
-                  <div className="row g-5 mb-3 py-4">
-                    <div className="col-md-7 col-lg-8">
-                      <CAnuncio />
-                      <div className="container text-center">
-                        <div className="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
-                          {datos.map((fila, index) => (
-                            <div className="col" key={index}>
-                              <div className="p-3 rounded-4 custom-border-info" style={{border:'2px solid #637391'}}>
-                                <Image src={fila.imagen} alt='imagen' className="img-fluid custom-img-info" />
-                              </div>
-                              <p className="py-2 fw-bold" style={{color:'#637391'}}>{fila.titulo}</p>
-                            </div>
-                          ))}
+        <Card className='p-0'>
+          <CTop />
+          <CAdorno />
+          <div className='m-0'>
+            <div className="container" >
+              <div className="row g-5 mb-3 py-4">
+                <div className="col-md-7 col-lg-8">
+                  <CAnuncio />
+                  <div className="container text-center">
+                    <div className="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
+                      {datos.map((fila, index) => (
+                        <div className="col" key={index}>
+                          <div className="p-3 rounded-4 custom-border-info" style={{ border: '2px solid #637391' }}>
+                            <Image src={fila.imagen} alt='imagen' className="img-fluid custom-img-info" />
+                          </div>
+                          <p className="py-2 fw-bold" style={{ color: '#637391' }}>{fila.titulo}</p>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                    <CFormulario />
                   </div>
                 </div>
+                <CFormulario />
               </div>
-              <Videosinfo />
-              <CFooter rutatmp='./../../' />
-           </Card>
+            </div>
+          </div>
+          <Videosinfo />
+          <CFooter rutatmp='./../../' />
+        </Card>
       </Row>
     </>
   )
