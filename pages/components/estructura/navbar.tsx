@@ -9,14 +9,18 @@ export default function CNavbar({ pagenav = "" }) {
         const categoriaFromUrl = urlParts[urlParts.length - 1];
 
         fetch('/db.json')
-            .then(response => response.json())
-            .then(json => {
-                const data: any[] = json.pgmenugb;
-                setDatos(data);
+          .then(response => response.json())
+          .then(json => {
+            const data = json.pgmenugb;
+            setDatos(data);
+            setSelMenu("informacion");
+            if (categoriaFromUrl && categoriaFromUrl.toLowerCase() !== "informacion") {
                 setSelMenu(categoriaFromUrl);
-            })
-            .catch(error => console.error('Error al obtener datos:', error));
-    }, []);
+              }
+          })
+          .catch(error => console.error('Error al obtener datos:', error));
+      }, []);
+      
 
     return (
         <>

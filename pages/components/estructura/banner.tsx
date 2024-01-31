@@ -12,10 +12,10 @@ export default function CBanner() {
         fetch('/db.json')
             .then(response => response.json())
             .then(json => {
-                const data: any[] = json.pgslidergb;
-                const imagenesFiltradas = data.filter(fila => fila.categoria === categoriaApi);
-                setDatos(imagenesFiltradas);
-                setBanners(categoriaApi);
+                const data = json.pgslidergb;
+                setDatos(data);
+                const filtrado = data.filter(fila => fila.categoria.toLowerCase() === "informacion");
+                setDatos(filtrado);
             })
             .catch(error => console.error('Error al obtener datos:', error));
 

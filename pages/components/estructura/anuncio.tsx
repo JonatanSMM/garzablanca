@@ -9,10 +9,10 @@ export default function CAnuncio() {
     fetch('/db.json')
       .then(response => response.json())
       .then(json => {
-        const data: any[] = json.pginformacion;
-        const filtrado = data.filter(fila => fila.categoria === rptAPI);
-        setDatos(filtrado);
-        setBanners(rptAPI);
+        const data = json.pginformacion;
+        setDatos(data);
+        const filtrado = data.filter(fila => fila.categoria.toLowerCase() === "informacion");
+        setDatos(filtrado);  
       })
       .catch(error => console.error('Tenemos un error', error));
   }, []);

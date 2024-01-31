@@ -6,17 +6,13 @@ import CAnuncio from './components/estructura/anuncio'
 import CAdorno from './components/estructura/adorno'
 import type { Metadata } from 'next'
 import { Card, Col, Row, Image } from 'react-bootstrap'
-import Slider from 'react-slick'
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 import React from 'react'
-import { Border } from 'react-bootstrap-icons'
 import Videosinfo from './components/estructura/videosinfo'
 export const metadata: Metadata = {
   title: 'Compratulote.pe : Plantilla',
   description: 'Plantilla inicicial',
 }
-export default function EstructuraInicio() {
+export default function Pinformacion() {
   const [datos, setDatos] = useState([]);
   const [banners, setBanners] = useState('');
   const settings = {
@@ -36,14 +32,14 @@ export default function EstructuraInicio() {
   };
   useEffect(() => {
     const verificador = window.location.pathname.split('/');
-    const rptAPI = verificador[verificador.length - 1];
+    const rptURL = verificador[verificador.length - 1];
     fetch('/db.json')
       .then(response => response.json())
       .then(json => {
-        const data: any[] = json.serviciosES; // Acceso a la tabla del json  
-        const filtrado = data.filter(fila => fila.categoria === rptAPI);
-        setDatos(filtrado);
-        setBanners(rptAPI);
+        const data = json.serviciosES;
+        setDatos(data);
+        const filtrado = data.filter(fila => fila.categoria.toLowerCase() === "informacion");
+        setDatos(filtrado);        
       })
       .catch(error => console.error("Se encontró un error"))
   }, []);
