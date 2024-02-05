@@ -39,7 +39,7 @@ export default function EstructuraInicio() {
               <div className="row g-5 mb-3">
                 <div className="col-md-7 col-lg-8">
                   {datos.map((fila, index) => (
-                    <div className="container mt-4 gx-5 ">
+                    <div className="container mt-4 gx-5" key={index}>
                       {fila.categoria === "infoup" &&
                         <p dangerouslySetInnerHTML={{ __html: fila.contenido }} />
                       }

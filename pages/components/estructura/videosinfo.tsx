@@ -46,8 +46,8 @@ export default function Videosinfo() {
     return (
         <>
             {datos.map((item, index) => (
-                <Row className='m-0 p-5' >
-                    <div className="col-md-7 col-lg-7 mb-1" key={index}>
+                <Row className='m-0 p-5' key={index}>
+                    <div className="col-md-7 col-lg-7 mb-1">
                         <div className='carousel slide p-2 h-100 w-100' style={{ border: '2px solid #212B36' }}>
                             <Slider ref={sliderRef} {...settings}>
                                 {item.titulo && item.titulo.split(',').map((path, i) => (
@@ -68,7 +68,7 @@ export default function Videosinfo() {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-5 col-lg-5 mb-1" key={index}>
+                    <div className="col-md-5 col-lg-5 mb-1">
                         <div className="p-2 position-relative h-100" style={{ height: '100%', width: '100%', border: '2px solid #212B36' }}>
                             <iframe src={item.contenido} className="w-100 h-100" style={{ border: 'none', borderRadius: 'inherit' }} allowFullScreen></iframe>
                         </div>
